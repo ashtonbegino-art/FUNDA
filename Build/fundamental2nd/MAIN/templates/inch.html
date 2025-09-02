@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Student Grade Calculator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 550px; /* even smaller */
+        margin: 30px auto;
+        padding: 20px;
+        background: linear-gradient(
+          to left,
+          rgb(24, 70, 24),
+          rgba(23, 125, 39, 0.4)
+        );
+        border-radius: 10px;
+      }
+      h2,
+      h3 {
+        text-align: center;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .column {
+        flex: 1;
+        min-width: 150px; /* smaller columns */
+        background: #e0e0e0;
+        padding: 10px;
+        border-radius: 8px;
+      }
+      label,
+      input {
+        display: block;
+        margin: 4px 0;
+        width: 100%;
+      }
+      input[type="number"] {
+        padding: 5px;
+      }
+      button {
+        padding: 10px;
+        width: 100%;
+        margin-top: 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .error {
+        color: red;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+      .rules {
+        background-color: #d9edf7;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .result {
+        background-color: #d4edda;
+        color: black;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        font-weight: bold;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Student Grade Calculator</h2>
+
+    <div class="rules">
+      <p><strong>Rules:📚</strong></p>
+      <ul>
+        <li>4 or more absences in any period = automatic fail.</li>
+        <li>Grades must be 0–100.</li>
+        <li>Calculate in sequence: Prelim → Midterm → Final.</li>
+      </ul>
+    </div>
+
+    {% if errors %}
+    <div class="error">
+      {% for e in errors %}
+      <p>{{ e }}</p>
+      {% endfor %}
+    </div>
+    {% endif %} {% if failed_due_absences %}
+    <div class="error">
+      <p>Failed due to too many absences (4 or more).🛑</p>
+      <p>Rule: 4 or more absences = fail</p>
+    </div>
+    {% endif %} {% if sequence_error %}
+    <div class="error">
+      <p>{{ sequence_error }}</p>
+    </div>
+    {% endif %}
+
+    <form method="POST">
+      <div class="row">
+        <div class="column">
+          <h3>Prelim</h3>
+          <input
+            type="number"
+            name="exam_absences"
+            placeholder="Absences"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="exam_quiz"
+            placeholder="Quiz"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="exam_requirements"
+            placeholder="Requirements"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="exam_recitation"
+            placeholder="Recitation"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="exam_score"
+            placeholder="Exam"
+            min="0"
+            max="100"
+          />
+        </div>
+
+        <div class="column">
+          <h3>Midterm</h3>
+          <input
+            type="number"
+            name="mid_absences"
+            placeholder="Absences"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="mid_quiz"
+            placeholder="Quiz"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="mid_requirements"
+            placeholder="Requirements"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="mid_recitation"
+            placeholder="Recitation"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="mid_score"
+            placeholder="Exam"
+            min="0"
+            max="100"
+          />
+        </div>
+
+        <div class="column">
+          <h3>Final</h3>
+          <input
+            type="number"
+            name="final_absences"
+            placeholder="Absences"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="final_quiz"
+            placeholder="Quiz"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="final_requirements"
+            placeholder="Requirements"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="final_recitation"
+            placeholder="Recitation"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="final_score"
+            placeholder="Exam"
+            min="0"
+            max="100"
+          />
+        </div>
+      </div>
+
+      <button type="submit">Calculate</button>
+    </form>
+
+    {% if prelim is not none or mid is not none or final is not none or overall
+    is not none %}
+    <div class="result">
+      {% if prelim is not none %}
+      <p>Prelim Grade: {{ prelim }}</p>
+      {% endif %} {% if mid is not none %}
+      <p>Midterm Grade: {{ mid }}</p>
+      {% endif %} {% if final is not none %}
+      <p>Final Grade: {{ final }}</p>
+      {% endif %} {% if overall is not none %}
+      <p>Overall Grade: {{ overall }}</p>
+      {% endif %} {% if req75 %}
+      <p>To pass 75% you need:</p>
+      {% for k,v in req75.items() %}
+      <p>{{ k.capitalize() }}: {{ v }}</p>
+      {% endfor %} {% endif %} {% if req90 %}
+      <p>To achieve Dean's List you need:</p>
+      {% for k,v in req90.items() %}
+      <p>{{ k.capitalize() }}: {{ v }}</p>
+      {% endfor %} {% endif %}
+    </div>
+    {% endif %}
+  </body>
+</html>
