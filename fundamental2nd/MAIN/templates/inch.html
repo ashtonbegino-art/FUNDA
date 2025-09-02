@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Student Grade Calculator</title>
+    <style>
+      body {
+        font-family: Arial;
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #f4f4f4;
+        border-radius: 10px;
+      }
+      h2 {
+        text-align: center;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+      }
+      .column {
+        flex: 1;
+        margin: 0 10px;
+        background: #e0e0e0;
+        padding: 15px;
+        border-radius: 8px;
+      }
+      h3 {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      input {
+        display: block;
+        margin: 5px 0;
+        width: 100%;
+        padding: 5px;
+      }
+      button {
+        padding: 10px;
+        width: 100%;
+        margin-top: 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .reminder {
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        margin: 10px 0;
+        font-weight: bold;
+      }
+      .pass {
+        background: #ffecb3;
+      }
+      .dean {
+        background: #c8e6c9;
+      }
+      .fail {
+        background: #ff9999;
+      }
+      .rule {
+        font-size: 0.9em;
+        text-align: center;
+        margin-top: 15px;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Student Grade Calculator</h2>
+
+    <form method="POST">
+      <div class="row">
+        <div class="column">
+          <h3>Prelim</h3>
+          <input
+            type="number"
+            name="exam_absences"
+            placeholder="Absences"
+            min="0"
+          />
+          <input
+            type="number"
+            name="exam_quiz"
+            placeholder="Quiz"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="exam_requirements"
+            placeholder="Requirements"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="exam_recitation"
+            placeholder="Recitation"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="exam_score"
+            placeholder="Exam"
+            min="0"
+            max="100"
+          />
+        </div>
+
+        <div class="column">
+          <h3>Midterm</h3>
+          <input
+            type="number"
+            name="mid_absences"
+            placeholder="Absences"
+            min="0"
+          />
+          <input
+            type="number"
+            name="mid_quiz"
+            placeholder="Quiz"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="mid_requirements"
+            placeholder="Requirements"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="mid_recitation"
+            placeholder="Recitation"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="mid_score"
+            placeholder="Exam"
+            min="0"
+            max="100"
+          />
+        </div>
+
+        <div class="column">
+          <h3>Final</h3>
+          <input
+            type="number"
+            name="final_absences"
+            placeholder="Absences"
+            min="0"
+          />
+          <input
+            type="number"
+            name="final_quiz"
+            placeholder="Quiz"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="final_requirements"
+            placeholder="Requirements"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="final_recitation"
+            placeholder="Recitation"
+            min="0"
+            max="100"
+          />
+          <input
+            type="number"
+            name="final_score"
+            placeholder="Exam"
+            min="0"
+            max="100"
+          />
+        </div>
+      </div>
+
+      <button type="submit">Calculate Final Grade</button>
+    </form>
+
+    {% if failed_due_absences %}
+    <div class="reminder fail">❌ Failed due to too many absences.</div>
+    <div class="rule">Rule: 4 or more absences = automatic fail</div>
+    {% else %} {% if prelim or mid or final %}
+    <p>Prelim avg: {{ prelim if prelim is not none else 'N/A' }}</p>
+    <p>Midterm avg: {{ mid if mid is not none else 'N/A' }}</p>
+    <p>Final avg: {{ final if final is not none else 'N/A' }}</p>
+    <p>Overall avg: {{ overall if overall is not none else 'N/A' }}</p>
+
+    {% if req75 %}
+    <div class="reminder pass">
+      To pass 75%: {% if req75.both %} Average needed across Mid & Final: {{
+      req75.both }} {% else %} {% for period, val in req75.items() %} {% if
+      val=='Impossible' %} Impossible to achieve {% else %} {{ period|capitalize
+      }} needed: {{ val }} {% endif %} {% endfor %} {% endif %}
+    </div>
+    {% endif %} {% if req90 %}
+    <div class="reminder dean">
+      To achieve Dean's List 90%: {% if req90.both %} Average needed across Mid
+      & Final: {{ req90.both }} {% else %} {% for period, val in req90.items()
+      %} {% if val=='Impossible' %} Impossible to achieve {% else %} {{
+      period|capitalize }} needed: {{ val }} {% endif %} {% endfor %} {% endif
+      %}
+    </div>
+    {% endif %} {% endif %} {% endif %}
+  </body>
+</html>
